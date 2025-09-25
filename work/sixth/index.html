@@ -14,8 +14,125 @@
     <button type="button" class="btn search-btn" id="pokemon_search">ポケモンを探す</button>
   </div>
   <script src="../../common/js/jquery.js"></script>
+
+
   <script>
     // 回答はここに書いてね
+
+    $(function()
+    {
+      $(document).on('click','#pokemon_search',function()
+      // ここを$(document).onにしないと、一連の動作が”1回”しか作動しない。 = ループできない。
+
+      {
+        const pokemonNumber = Math.floor(Math.random() * 151) + 1;
+        // ポケモンの情報（対応の番号）を取得
+        // インデックス番号は0からスタートだから、+1で番号の調整
+
+        $.ajax
+        ({
+          url: 'https://pokeapi.co/api/v2/pokemon/' + pokemonNumber,
+          method: 'GET'
+        })
+        // APIに接続
+
+        .done(function(data)
+        {
+          const pokemonImage = data.sprites.front_default;
+          // 接続に成功した場合、対応するidのポケモンの画像を取得
+
+            $.ajax
+            ({
+              url: data.species.url,
+              method: 'GET'
+            })
+            // 日本語版のAPIに接続
+
+            .done(function (speciesData)
+            {
+              const names = speciesData.names;
+              const japaneseName = names.find(n => n.language.name === "ja").name;
+              // 日本語版のAPIに接続後、ポケモンの名前情報を取得
+
+              let encountHtml =
+                `
+                <p class="name">${japaneseName}</p>
+                <div>
+                  <img class="img" src="${pokemonImage}" alt="${japaneseName}">
+                </div>
+                <div>
+                  <button class="btn" id="catch">捕まえる</button>
+                  <button class="btn" data-js="reset">逃げる</button>
+                </div>
+                `
+                // 実行したいhtmlの設定
+
+              $('.wrapper').html(encountHtml);
+              // id = pokemon_search をクリックしたら、 class = wrapper で html(encount)を実行
+            });
+        });
+      });
+
+      $(document).on('click','#catch',function()
+      // #catchはjQuery内で定義したボタンなため、直接呼び出しても使えない。
+      // そういうときは$(document).onを使う。
+      // $(document).onなら、後から追加された要素を使用できる。
+      // 対象要素.on(イベント名,セレクタ,データ,関数)
+      {
+        const success = Math.random() < 0.5;
+        // 成功と失敗の確率の設定。
+
+        if(success)
+        {
+          $.ajax
+          ({
+            url: 'https://pokeapi.co/api/v2/item/4',
+            method: 'GET'
+          })
+          // ポケモンGETできたら、モンスターボールの画像を取得。
+
+          .done(function(ballData)
+          {
+            const ballImage = ballData.sprites.default;
+
+            let doneHtml =
+              `
+                <p class="name">ゲットしました</p>
+                <div>
+                  <img class="img" src="${ballImage}" alt="モンスターボール">
+                </div>
+                <button class="btn" data-js="reset">戻る</button>
+              `
+            
+            $('.wrapper').html(doneHtml);
+            // 画像取得後にwrapperに画像表示。
+          });
+        }
+        else
+        {
+          let failHtml =
+            `
+              <p class="text">逃げられてしまった...</p>
+              <button class="btn mt" data-js="reset">戻る</button>
+            `
+            // GET失敗パターンのhtml
+
+            $('.wrapper').html(failHtml);
+        }
+      });
+
+      $(document).on('click','[data-js="reset"]',function()
+      {
+        $('.wrapper')
+        .html('<button type="button" class="btn search-btn" id="pokemon_search">ポケモンを探す</button>');
+        // 「ポケモンを探す」→「逃げる」
+        // 「ポケモンを探す」→「捕まえる」→「成功」→「戻る」
+        // 「ポケモンを探す」→「捕まえる」→「失敗」→「戻る」
+        // この3つが同じ場所に帰って来れるように設定。
+      });
+    });
   </script>
+
+
 </body>
 </html>
