@@ -47,14 +47,100 @@
   </div>
 </div>
 <script src="../../common/js/jquery.js"></script>
+<!--scriptタグのsrc属性jQueryライブラリのURLを記述-->
+
 <script>
+// scriptタグの中にjQueuryコードを記述
+  $(function() {
+
 // 第1問  id='q1'の要素の文字色を赤色にせよ。
+    $('#q1').css('color', 'red');
+    // $('htmlで記述したidタグ').css('cssの指定')
+    // idの場合は#、classの場合は.をつける。cssと一緒。
+    // このように、〇〇()と書くものを「メソッド」と呼ぶ。
+
+    
+
 // 第2問  id='q2'の要素をクリックしたら背景色をピンクにせよ。
+    $('#q2').click(function()
+    {
+      $(this)
+      .css('background-color', 'pink');
+    });
+    // click(); = ()の中に関数を書くと、指定した要素をクリックした後にその関数を実行する。
+    // $(this) = $('#q2')
+
+
+
 // 第3問  id='q3'の要素をクリックしたらこの要素の前後とこの要素内の前後にテキストを挿入せよ。
+    $('#q3').click(function()
+    {
+      $(this)
+      .prepend('DOMの中の前')
+      .append('DOMの中の後')
+      .before('DOMの前')
+      .after('DOMの後');
+    });
+    // メソッドチェイン = 「.」で繋げて、同じ要素に対して複数の操作を一度に適用させる。
+
+
+
 // 第4問  id='q4'の要素をクリックしたらこの要素にlargeというクラスを付与せよ。
+    $('#q4').click(function()
+    {
+      $(this).addClass('large');
+    });
+    // css() = 対象の要素に対して直接指定（上書き）。
+    // addClass() = 元々cssシートで指定していた設定に追加。
+
+
+
 // 第5問  id='q5'の要素をクリックしたらこの要素を2秒かけてmargin-topとmargin-leftを100pxの位置に移動させよ。
+    $('#q5').click(function()
+    {
+      $(this).animate(
+      {
+        'marginLeft': 100,
+        'marginTop': 100
+      }, 2000);
+    });
+    // animate() = cssのプロパティを一定時間かけて変更するメソッド。
+    // animate({'プロパティ' : 値,},ミリ秒);
+
+
+
 // 第6問  id='q6'の子要素をクリックしたら、その要素のインデックス（何番目か）をconsole.log()とalert()を用いて表示させよ。
+    $('#q6').find('li').click(function()
+    {
+    var targetNum = $(this).index();
+    console.log(targetNum);
+    alert(targetNum);
+    });
+    // find('li') = $('#q6')の<li>要素を全て"取得"。
+    //       <ul class="list" id="q6">
+    //         <li>Q6-1</li>
+    //         <li>Q6-2</li>
+    //         <li>Q6-3</li>
+    //         <li>Q6-4</li>
+    //       </ul>
+    // index() = li（リスト）のインデックス番号を"取得"。
+    // $(this).index()をvar targetNumに代入。
+    // alert() = 取得したデータを"表示"。
+
+
+
 // 第7問  id='q7'の要素をクリックしたらこの要素に設定してあるdata属性をconsoleに表示せよ。
+    $('#q7').click(function()
+    {
+      var text = $(this).data('text');
+      console.log(text);
+    });
+    // data('text') = HTMの、data属性を取得。
+    // <div class="btn" id="q7" data-text="jQuery">Q7</div>
+
+
+
+});
 </script>
 </body>
 </html>
